@@ -36,6 +36,7 @@ class TrunkingServer: CoroutineScope {
                     this.channel(NioServerSocketChannel::class.java)
                     this.childHandler(object: ChannelInitializer<SocketChannel>() {
                         override fun initChannel(ch: SocketChannel?) {
+                            ch!!.pipeline().addLast(StringDecoder())
                             ch!!.pipeline().addLast(DataHandler())
                         }
 
@@ -62,22 +63,21 @@ class TrunkingServer: CoroutineScope {
         coroutineContext.cancel()
     }
 
-    private inner class DataHandler: SimpleChannelInboundHandler<ByteArray>() {
-        override fun channelRead0(ctx: ChannelHandlerContext?, msg: ByteArray?) {
-            Log.d("Trace", "Channel read : $msg")
-            callback?.onReadData(msg!!)
-            ctx?.writeAndFlush(msg)
-        }
-
+    private inner class DataHandler: ChannelInboundHandlerAdapter() {
         override fun channelActive(ctx: ChannelHandlerContext?) {
             super.channelActive(ctx)
-            callback?.onLinkIn(ctx?.channel()?.remoteAddress().toString())
-            Log.d("Trace", "Channel active : ${ctx?.channel()?.remoteAddress()}")
+            Log.d("Trace", "Channel active")
         }
 
         override fun channelInactive(ctx: ChannelHandlerContext?) {
             super.channelInactive(ctx)
-            Log.d("Trace", "Channel inactive : ${ctx?.channel()?.remoteAddress()}")
+            Log.d("Trace", "Channel inactive")
         }
+
+        override fun channelRead(ctx: ChannelHandlerContext?, msg: Any?) {
+            Log.d("Trace", "Read")
+            super.channelRead(ctx, msg)
+        }
+
     }
 }

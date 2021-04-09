@@ -1,10 +1,12 @@
 package idv.bruce.wifiradio
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import idv.bruce.moduletrunking.TrunkingServer
 import idv.bruce.moduletrunking.TrunkingServerCallback
+import idv.bruce.moduletrunking.TrunkingServerService
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -29,17 +31,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        trunkingServer.start()
+        startService(Intent(this, TrunkingServerService::class.java))
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
-        trunkingServer.stop()
+        stopService(Intent(this,TrunkingServerService::class.java))
     }
 
     private fun showLog(msg:String){
