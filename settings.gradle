@@ -1,0 +1,3 @@
+include ':ModuleTrunking'
+include ':app'
+rootProject.name = "WifiRadio"
