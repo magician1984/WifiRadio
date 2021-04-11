@@ -1,0 +1,5 @@
+//Register member to group
+AT+REGISTER=<GROUP ID>
+
+//Quarry groups
+AT+GROUPS
